@@ -5,11 +5,12 @@ import { formatPrice } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { Star, StarHalf, ShieldCheck, Truck, IndianRupee } from 'lucide-react';
+import { Star, StarHalf, ShieldCheck, Truck } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { ProductRecommendations } from '@/components/ProductRecommendations';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export async function generateStaticParams() {
   return products.map(product => ({
@@ -43,14 +44,14 @@ export default function ProductPage({ params }: { params: { id: string } }) {
     : 0;
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-8">
+    <div className="container mx-auto max-w-7xl px-4 py-12">
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
         <div>
            <Carousel className="w-full">
             <CarouselContent>
               {product.images.map((src, index) => (
                 <CarouselItem key={index}>
-                  <Card className="overflow-hidden">
+                  <Card className="overflow-hidden rounded-xl">
                     <Image
                       src={src}
                       alt={`${product.name} image ${index + 1}`}
@@ -74,66 +75,56 @@ export default function ProductPage({ params }: { params: { id: string } }) {
             <span className="text-muted-foreground">{product.reviews.length} reviews</span>
           </div>
           <p className="text-4xl font-bold text-primary">{formatPrice(product.price)}</p>
-          <Badge variant={product.stock > 0 ? "default" : "destructive"}>
-            {product.stock > 0 ? `In Stock (${product.stock} available)` : 'Out of Stock'}
-          </Badge>
-          <p className="text-lg text-muted-foreground">{product.description}</p>
+          <p className="text-lg text-muted-foreground leading-relaxed">{product.description}</p>
           
-          <Card>
-            <CardContent className="p-6 space-y-4">
-              <Button size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90" disabled={product.stock === 0}>
-                Buy Now
-              </Button>
-              <div className="text-center text-sm text-muted-foreground">Secure payment via:</div>
-              <div className="flex justify-center items-center gap-4 text-sm">
-                <span>UPI</span>
-                <span>•</span>
-                <span>Credit/Debit Card</span>
-                 <span>•</span>
-                <span>Net Banking</span>
-                 <span>•</span>
-                <span className="font-bold">COD</span>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="space-y-4 pt-4">
+            <Badge variant={product.stock > 0 ? "default" : "destructive"}>
+              {product.stock > 0 ? `In Stock (${product.stock} available)` : 'Out of Stock'}
+            </Badge>
+            <Button size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90" disabled={product.stock === 0}>
+              Buy Now
+            </Button>
+          </div>
 
-          <div className="grid grid-cols-2 gap-4 text-sm">
-             <div className="flex items-center gap-2">
+          <Card>
+            <CardContent className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+             <div className="flex items-center gap-3">
                 <ShieldCheck className="w-5 h-5 text-green-600" />
                 <span>1 Year Manufacturer Warranty</span>
             </div>
-             <div className="flex items-center gap-2">
+             <div className="flex items-center gap-3">
                 <Truck className="w-5 h-5 text-blue-600" />
                 <span>Fast Delivery Across India</span>
             </div>
-          </div>
-
+            </CardContent>
+          </Card>
         </div>
       </div>
       
       <Separator className="my-12" />
 
-      <div className="grid md:grid-cols-3 gap-12">
-        <div className="md:col-span-2 space-y-8">
-            <div>
-              <h3 className="font-headline text-2xl font-bold mb-4">Specifications</h3>
-              <Card>
-                <CardContent className="p-0">
-                  <ul className="divide-y">
-                    {Object.entries(product.specs).map(([key, value]) => (
-                      <li key={key} className="flex justify-between p-4">
-                        <span className="font-medium text-muted-foreground">{key}</span>
-                        <span className="text-right">{value}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            </div>
-
-            <div>
-              <h3 className="font-headline text-2xl font-bold mb-4">Customer Reviews</h3>
-              <div className="space-y-6">
+      <div>
+        <Tabs defaultValue="specifications" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto">
+            <TabsTrigger value="specifications">Specifications</TabsTrigger>
+            <TabsTrigger value="reviews">Customer Reviews</TabsTrigger>
+          </TabsList>
+          <TabsContent value="specifications" className="mt-6">
+            <Card>
+              <CardContent className="p-0">
+                <ul className="divide-y">
+                  {Object.entries(product.specs).map(([key, value]) => (
+                    <li key={key} className="flex justify-between items-center p-4">
+                      <span className="font-medium text-muted-foreground">{key}</span>
+                      <span className="text-right font-medium">{value}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          <TabsContent value="reviews" className="mt-6">
+             <div className="space-y-6">
                 {product.reviews.length > 0 ? product.reviews.map(review => (
                   <Card key={review.id}>
                     <CardHeader>
@@ -152,10 +143,16 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                       <p className="text-muted-foreground">{review.text}</p>
                     </CardContent>
                   </Card>
-                )) : <p className="text-muted-foreground">No reviews yet. Be the first to review this product!</p>}
+                )) : (
+                  <Card>
+                    <CardContent className="p-8 text-center text-muted-foreground">
+                      No reviews yet. Be the first to review this product!
+                    </CardContent>
+                  </Card>
+                )}
               </div>
-            </div>
-        </div>
+          </TabsContent>
+        </Tabs>
       </div>
 
        <Separator className="my-12" />

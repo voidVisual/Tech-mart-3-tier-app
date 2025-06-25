@@ -45,12 +45,44 @@ export function Header() {
           </nav>
         </div>
 
-        <div className="flex flex-1 items-center justify-end gap-4">
+        {/* Mobile Logo */}
+        <div className="flex-1 md:hidden">
+            <Link href="/" className="flex items-center space-x-2">
+              <Zap className="h-6 w-6 text-primary" />
+              <span className="font-bold font-headline">TechMart</span>
+            </Link>
+        </div>
+
+
+        <div className="flex flex-none items-center justify-end gap-4">
           <div className="hidden w-full max-w-sm md:block">
             <SearchForm />
           </div>
 
-          <div className="flex items-center">
+          <div className="flex items-center gap-1">
+             <nav className="hidden md:flex items-center gap-1">
+              <Button variant="ghost" asChild>
+                <Link href="/login">Log In</Link>
+              </Button>
+              <Button asChild>
+                <Link href="/signup">Sign Up</Link>
+              </Button>
+            </nav>
+
+            <nav className="flex items-center">
+              <div className="h-6 border-l mx-2 hidden md:block"></div>
+              <Button variant="ghost" size="icon" asChild>
+                <Link href="/account">
+                  <User className="h-5 w-5" />
+                  <span className="sr-only">Account</span>
+                </Link>
+              </Button>
+              <Button variant="ghost" size="icon">
+                <ShoppingCart className="h-5 w-5" />
+                <span className="sr-only">Shopping Cart</span>
+              </Button>
+            </nav>
+            
             <div className="md:hidden">
               <Sheet>
                 <SheetTrigger asChild>
@@ -89,34 +121,6 @@ export function Header() {
                 </SheetContent>
               </Sheet>
             </div>
-            
-            <Link href="/" className="flex items-center space-x-2 md:hidden">
-              <Zap className="h-6 w-6 text-primary" />
-              <span className="font-bold font-headline">TechMart</span>
-            </Link>
-
-            <nav className="hidden md:flex items-center gap-1">
-              <Button variant="ghost" asChild>
-                <Link href="/login">Log In</Link>
-              </Button>
-              <Button asChild>
-                <Link href="/signup">Sign Up</Link>
-              </Button>
-              <div className="h-6 border-l mx-2"></div>
-            </nav>
-
-            <nav className="flex items-center">
-              <Button variant="ghost" size="icon" asChild>
-                <Link href="/account">
-                  <User className="h-5 w-5" />
-                  <span className="sr-only">Account</span>
-                </Link>
-              </Button>
-              <Button variant="ghost" size="icon">
-                <ShoppingCart className="h-5 w-5" />
-                <span className="sr-only">Shopping Cart</span>
-              </Button>
-            </nav>
           </div>
         </div>
       </div>

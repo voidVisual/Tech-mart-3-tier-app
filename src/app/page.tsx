@@ -3,8 +3,9 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Testimonials } from '@/components/Testimonials';
-import { categories } from '@/lib/data';
+import { categories, products } from '@/lib/data';
 import { ArrowRight, Laptop, Smartphone, Camera, Headphones } from 'lucide-react';
+import { ProductCard } from '@/components/ProductCard';
 
 const categoryIcons: { [key: string]: React.ReactNode } = {
   laptops: <Laptop className="h-8 w-8" />,
@@ -69,6 +70,24 @@ export default function Home() {
                   </CardContent>
                 </Card>
               </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+      
+      <section className="w-full py-12 md:py-24 lg:py-32">
+        <div className="container px-4 md:px-6">
+          <div className="flex flex-col items-center justify-center space-y-4 text-center">
+            <div className="space-y-2">
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline">Featured Products</h2>
+              <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                Check out our hand-picked selection of top-selling electronics.
+              </p>
+            </div>
+          </div>
+          <div className="mx-auto grid grid-cols-1 gap-6 py-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {products.slice(0, 4).map((product) => (
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
         </div>

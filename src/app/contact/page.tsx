@@ -17,7 +17,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Mail, Phone, MapPin, RefreshCw } from 'lucide-react';
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -131,32 +132,30 @@ export default function ContactPage() {
 
         <div className="space-y-8">
             <Card>
-                <CardContent className="p-6 space-y-4">
-                    <h3 className="text-2xl font-bold font-headline">Contact Information</h3>
-                    <div className="space-y-3 text-muted-foreground">
-                        <div className="flex items-center gap-3">
-                            <Mail className="w-5 h-5 text-primary" />
-                            <span>support@techmartindia.com</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <Phone className="w-5 h-5 text-primary" />
-                            <span>+91 98765 43210</span>
-                        </div>
+                <CardHeader>
+                  <h3 className="text-2xl font-bold font-headline">Contact Information</h3>
+                </CardHeader>
+                <CardContent className="space-y-6 text-lg">
+                    <div className="flex items-center gap-4">
+                        <Mail className="w-6 h-6 text-primary" />
+                        <span>support@techmartindia.com</span>
                     </div>
-                </CardContent>
-            </Card>
-
-            <Card>
-                <CardContent className="p-6 space-y-4">
-                    <h3 className="text-2xl font-bold font-headline">Address for Returns</h3>
-                     <div className="flex items-start gap-3 text-muted-foreground">
-                        <MapPin className="w-5 h-5 text-primary mt-1 shrink-0" />
-                        <address className="not-italic">
-                            TechMart India Returns Dept.<br/>
-                            123 Electronics Hub, Cyberabad<br/>
-                            Hyderabad, Telangana 500081<br/>
-                            India
-                        </address>
+                    <div className="flex items-center gap-4">
+                        <Phone className="w-6 h-6 text-primary" />
+                        <span>+91 98765 43210</span>
+                    </div>
+                    <Separator/>
+                    <div className="space-y-4">
+                        <h4 className="text-xl font-bold font-headline">Address for Returns</h4>
+                         <div className="flex items-start gap-4 text-muted-foreground">
+                            <MapPin className="w-6 h-6 text-primary mt-1 shrink-0" />
+                            <address className="not-italic leading-relaxed">
+                                TechMart India Returns Dept.<br/>
+                                123 Electronics Hub, Cyberabad<br/>
+                                Hyderabad, Telangana 500081<br/>
+                                India
+                            </address>
+                        </div>
                     </div>
                 </CardContent>
             </Card>
