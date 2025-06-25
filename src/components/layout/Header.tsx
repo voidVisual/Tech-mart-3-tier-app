@@ -7,6 +7,7 @@ import { Menu, ShoppingCart, User, Zap, Laptop, Smartphone, Camera, Headphones }
 import { categories } from '@/lib/data';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { SearchForm } from '@/components/SearchForm';
 
 const navLinks = categories.map(c => ({ href: `/products/${c.id}`, label: c.name }));
 
@@ -44,57 +45,79 @@ export function Header() {
           </nav>
         </div>
 
-        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-          <div className="md:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu className="h-5 w-5" />
-                  <span className="sr-only">Toggle Menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="pr-0">
-                <Link href="/" className="mr-6 flex items-center space-x-2 mb-6">
-                  <Zap className="h-6 w-6 text-primary" />
-                  <span className="font-bold font-headline">TechMart India</span>
-                </Link>
-                <div className="flex flex-col space-y-3">
-                  {navLinks.map(link => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      className={cn(
-                        "transition-colors hover:text-primary flex items-center gap-2 p-2 rounded-md",
-                         pathname?.startsWith(link.href) ? "bg-secondary text-primary" : "text-foreground"
-                      )}
-                    >
-                      {iconMap[link.label.toLowerCase()]}
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
-              </SheetContent>
-            </Sheet>
+        <div className="flex flex-1 items-center justify-end gap-4">
+          <div className="hidden w-full max-w-sm md:block">
+            <SearchForm />
           </div>
-          
-          <Link href="/" className="flex items-center space-x-2 md:hidden">
-            <Zap className="h-6 w-6 text-primary" />
-            <span className="font-bold font-headline">TechMart</span>
-          </Link>
 
+          <div className="flex items-center">
+            <div className="md:hidden">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Menu className="h-5 w-5" />
+                    <span className="sr-only">Toggle Menu</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="pr-0 sm:max-w-xs">
+                  <Link href="/" className="mr-6 flex items-center space-x-2 mb-6 px-4">
+                    <Zap className="h-6 w-6 text-primary" />
+                    <span className="font-bold font-headline">TechMart India</span>
+                  </Link>
+                  <div className="px-4 mb-4">
+                    <SearchForm />
+                  </div>
+                  <div className="flex flex-col space-y-2 px-4">
+                    {navLinks.map(link => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className={cn(
+                          "transition-colors hover:text-primary flex items-center gap-2 p-2 rounded-md",
+                          pathname?.startsWith(link.href) ? "bg-secondary text-primary" : "text-foreground"
+                        )}
+                      >
+                        {iconMap[link.label.toLowerCase()]}
+                        {link.label}
+                      </Link>
+                    ))}
+                  </div>
+                  <div className="border-t pt-4 mt-4 space-y-2 px-4">
+                      <Button variant="outline" className="w-full justify-start" asChild><Link href="/login">Log In</Link></Button>
+                      <Button className="w-full justify-start" asChild><Link href="/signup">Sign Up</Link></Button>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+            
+            <Link href="/" className="flex items-center space-x-2 md:hidden">
+              <Zap className="h-6 w-6 text-primary" />
+              <span className="font-bold font-headline">TechMart</span>
+            </Link>
 
-          <nav className="flex items-center">
-            <Button variant="ghost" size="icon" asChild>
-              <Link href="/account">
-                <User className="h-5 w-5" />
-                <span className="sr-only">Account</span>
-              </Link>
-            </Button>
-            <Button variant="ghost" size="icon">
-              <ShoppingCart className="h-5 w-5" />
-              <span className="sr-only">Shopping Cart</span>
-            </Button>
-          </nav>
+            <nav className="hidden md:flex items-center gap-1">
+              <Button variant="ghost" asChild>
+                <Link href="/login">Log In</Link>
+              </Button>
+              <Button asChild>
+                <Link href="/signup">Sign Up</Link>
+              </Button>
+              <div className="h-6 border-l mx-2"></div>
+            </nav>
+
+            <nav className="flex items-center">
+              <Button variant="ghost" size="icon" asChild>
+                <Link href="/account">
+                  <User className="h-5 w-5" />
+                  <span className="sr-only">Account</span>
+                </Link>
+              </Button>
+              <Button variant="ghost" size="icon">
+                <ShoppingCart className="h-5 w-5" />
+                <span className="sr-only">Shopping Cart</span>
+              </Button>
+            </nav>
+          </div>
         </div>
       </div>
     </header>
