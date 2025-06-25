@@ -7,7 +7,7 @@ import { formatPrice } from "@/lib/utils";
 const mockUser = {
   name: "Ravi Kumar",
   email: "ravi.kumar@example.com",
-  avatarUrl: "https://placehold.co/100x100.png",
+  avatarUrl: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61",
 };
 
 const mockOrders = [

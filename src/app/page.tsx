@@ -38,8 +38,8 @@ export default function Home() {
               </div>
             </div>
             <Image
-              src="https://placehold.co/600x400.png"
-              data-ai-hint="modern electronics"
+              src="https://images.unsplash.com/photo-1550009158-94ae76552485"
+              data-ai-hint="modern electronics collage"
               alt="Hero Product"
               width={600}
               height={400}
