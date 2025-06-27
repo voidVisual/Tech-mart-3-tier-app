@@ -1,54 +1,53 @@
--- Create the database if it doesn't exist
-CREATE DATABASE IF NOT EXISTS techmart;
 
-USE techmart;
+CREATE TABLE IF NOT EXISTS `categories` (
+  `id` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Users table for authentication
-CREATE TABLE IF NOT EXISTS users (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  email VARCHAR(255) NOT NULL UNIQUE,
-  password_hash VARCHAR(255) NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+CREATE TABLE IF NOT EXISTS `products` (
+  `id` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `category_id` varchar(255) DEFAULT NULL,
+  `price` int DEFAULT NULL,
+  `images` json DEFAULT NULL,
+  `description` text,
+  `specs` json DEFAULT NULL,
+  `stock` int DEFAULT NULL,
+  `ai_hint` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `category_id` (`category_id`),
+  CONSTRAINT `products_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Categories table
-CREATE TABLE IF NOT EXISTS categories (
-  id VARCHAR(255) PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  description TEXT
-);
+CREATE TABLE IF NOT EXISTS `reviews` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `product_id` varchar(255) NOT NULL,
+  `rating` int NOT NULL,
+  `text` text,
+  `author` varchar(255) DEFAULT NULL,
+  `avatar` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `product_id` (`product_id`),
+  CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Products table
-CREATE TABLE IF NOT EXISTS products (
-  id VARCHAR(255) PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  category_id VARCHAR(255),
-  price DECIMAL(10, 2) NOT NULL,
-  images JSON,
-  description TEXT,
-  specs JSON,
-  stock INT,
-  ai_hint VARCHAR(255),
-  FOREIGN KEY (category_id) REFERENCES categories(id)
-);
+CREATE TABLE IF NOT EXISTS `testimonials` (
+  `id` int NOT NULL,
+  `quote` text NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `avatar` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Reviews table
-CREATE TABLE IF NOT EXISTS reviews (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  product_id VARCHAR(255),
-  rating INT,
-  text TEXT,
-  author VARCHAR(255),
-  avatar VARCHAR(255),
-  FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
-);
-
--- Testimonials table
-CREATE TABLE IF NOT EXISTS testimonials (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  quote TEXT,
-  name VARCHAR(255),
-  title VARCHAR(255),
-  avatar VARCHAR(255)
-);
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

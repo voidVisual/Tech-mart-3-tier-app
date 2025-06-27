@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   web:
     build:
@@ -6,5 +7,29 @@ services:
       dockerfile: Dockerfile
     ports:
       - '3000:3000'
-    environment:
-      NODE_ENV: production
+    env_file:
+      - .env
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    volumes:
+      - mysql-data:/var/lib/mysql
+    env_file:
+      - .env
+    # This exposes the port to your host machine for direct access, which is useful for debugging.
+    ports:
+      - "3306:3306"
+
+volumes:
+  mysql-data:
+    # This ensures your database data persists even if you remove the container.
