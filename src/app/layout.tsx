@@ -1,19 +1,24 @@
+
 import type { Metadata } from 'next';
 import './globals.css';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Toaster } from "@/components/ui/toaster";
+import { getCategoriesAction } from './actions';
+import { categories } from '@/lib/data';
 
 export const metadata: Metadata = {
   title: 'TechMart India',
   description: 'Your one-stop shop for electronics in India.',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const categories = await getCategoriesAction();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -24,11 +29,11 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased">
         <div className="relative flex min-h-dvh flex-col bg-background">
-          <Header />
+          <Header categories={categories} />
           <main className="flex-1">
             {children}
           </main>
-          <Footer />
+          <Footer categories={categories} />
         </div>
         <Toaster />
       </body>

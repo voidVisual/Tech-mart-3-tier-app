@@ -1,6 +1,6 @@
+
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { products } from '@/lib/data';
 import { formatPrice } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,8 +11,10 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { ProductRecommendations } from '@/components/ProductRecommendations';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getProductByIdAction, getProductsAction } from '@/app/actions';
 
 export async function generateStaticParams() {
+  const products = await getProductsAction();
   return products.map(product => ({
     id: product.id,
   }));
@@ -32,12 +34,8 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
-export default function ProductPage({ params }: { params: { id: string } }) {
-  const product = products.find(p => p.id === params.id);
-
-  if (!product) {
-    notFound();
-  }
+export default async function ProductPage({ params }: { params: { id: string } }) {
+  const product = await getProductByIdAction(params.id);
 
   const averageRating = product.reviews.length > 0
     ? product.reviews.reduce((acc, review) => acc + review.rating, 0) / product.reviews.length

@@ -1,11 +1,12 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Testimonials } from '@/components/Testimonials';
-import { categories, products } from '@/lib/data';
 import { ArrowRight, Laptop, Smartphone, Camera, Headphones } from 'lucide-react';
 import { ProductCard } from '@/components/ProductCard';
+import { getCategoriesAction, getFeaturedProductsAction } from './actions';
 
 const categoryIcons: { [key: string]: React.ReactNode } = {
   laptops: <Laptop className="h-8 w-8" />,
@@ -14,7 +15,10 @@ const categoryIcons: { [key: string]: React.ReactNode } = {
   accessories: <Headphones className="h-8 w-8" />,
 };
 
-export default function Home() {
+export default async function Home() {
+  const categories = await getCategoriesAction();
+  const featuredProducts = await getFeaturedProductsAction();
+
   return (
     <div className="flex flex-col">
       <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-primary text-primary-foreground">
@@ -86,7 +90,7 @@ export default function Home() {
             </div>
           </div>
           <div className="mx-auto grid grid-cols-1 gap-6 py-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {products.slice(0, 4).map((product) => (
+            {featuredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>

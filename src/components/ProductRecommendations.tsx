@@ -1,8 +1,9 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
 import { getAIRecommendations } from '@/app/actions';
-import { products, type Product } from '@/lib/data';
+import type { Product } from '@/lib/data';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -11,8 +12,10 @@ import Link from 'next/link';
 import { formatPrice } from '@/lib/utils';
 import { Wand2 } from 'lucide-react';
 
+type RecommendedProduct = Product & { reason: string };
+
 export function ProductRecommendations({ currentProduct }: { currentProduct: Product }) {
-  const [recommendations, setRecommendations] = useState<{ productName: string; reason: string }[]>([]);
+  const [recommendations, setRecommendations] = useState<RecommendedProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,18 +23,8 @@ export function ProductRecommendations({ currentProduct }: { currentProduct: Pro
     const fetchRecommendations = async () => {
       setLoading(true);
       setError(null);
-
-      const otherProducts = products
-        .filter(p => p.id !== currentProduct.id)
-        .slice(0, 3)
-        .map(p => p.name);
       
-      const input = {
-        browsingHistory: [currentProduct.name, ...otherProducts.slice(0, 2)].join(', '),
-        pastPurchases: otherProducts.length > 2 ? otherProducts[2] : ''
-      };
-
-      const result = await getAIRecommendations(input);
+      const result = await getAIRecommendations(currentProduct.id);
 
       if (result.success && result.recommendations) {
         setRecommendations(result.recommendations);
@@ -69,23 +62,20 @@ export function ProductRecommendations({ currentProduct }: { currentProduct: Pro
       )}
       {!loading && !error && recommendations.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {recommendations.slice(0, 4).map((rec, index) => {
-             const product = products.find(p => p.name.toLowerCase() === rec.productName.toLowerCase());
-             return product ? (
+          {recommendations.slice(0, 4).map((rec, index) => (
               <Card key={index} className="overflow-hidden">
-                <Link href={`/product/${product.id}`}>
-                  <Image src={product.images[0]} alt={product.name} data-ai-hint={product.aiHint} width={300} height={300} className="w-full aspect-square object-cover" />
+                <Link href={`/product/${rec.id}`}>
+                  <Image src={rec.images[0]} alt={rec.name} data-ai-hint={rec.aiHint} width={300} height={300} className="w-full aspect-square object-cover" />
                   <CardHeader>
-                    <CardTitle className="text-base font-headline">{product.name}</CardTitle>
+                    <CardTitle className="text-base font-headline">{rec.name}</CardTitle>
                   </CardHeader>
                 </Link>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-2">{rec.reason}</p>
-                  <p className="font-bold">{formatPrice(product.price)}</p>
+                  <p className="font-bold">{formatPrice(rec.price)}</p>
                 </CardContent>
               </Card>
-             ) : null;
-          })}
+          ))}
         </div>
       )}
     </div>

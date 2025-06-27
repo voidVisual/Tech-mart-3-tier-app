@@ -1,22 +1,12 @@
-"use client";
 
-import { useSearchParams } from 'next/navigation';
-import { products } from '@/lib/data';
+"use server";
+
 import { ProductCard } from '@/components/ProductCard';
-import { useMemo, Suspense } from 'react';
+import { searchProductsAction } from '@/app/actions';
 
-function SearchResults() {
-  const searchParams = useSearchParams();
-  const query = searchParams.get('q') || '';
-
-  const searchResults = useMemo(() => {
-    if (!query) return [];
-    return products.filter(product =>
-      product.name.toLowerCase().includes(query.toLowerCase()) ||
-      product.description.toLowerCase().includes(query.toLowerCase()) ||
-      product.category.toLowerCase().includes(query.toLowerCase())
-    );
-  }, [query]);
+export default async function SearchPage({ searchParams }: { searchParams?: { [key: string]: string | string[] | undefined }}) {
+  const query = typeof searchParams?.q === 'string' ? searchParams.q : '';
+  const searchResults = await searchProductsAction(query);
 
   return (
     <div className="container py-8 px-4 md:px-6">
@@ -58,13 +48,4 @@ function SearchResults() {
       )}
     </div>
   );
-}
-
-
-export default function SearchPage() {
-    return (
-        <Suspense fallback={<div>Loading...</div>}>
-            <SearchResults />
-        </Suspense>
-    )
 }

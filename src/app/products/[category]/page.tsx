@@ -1,20 +1,18 @@
+
 import { notFound } from 'next/navigation';
-import { products, categories } from '@/lib/data';
 import { ProductCard } from '@/components/ProductCard';
+import { getCategoriesAction, getCategoryByIdAction, getProductsByCategoryAction } from '@/app/actions';
 
 export async function generateStaticParams() {
+  const categories = await getCategoriesAction();
   return categories.map(category => ({
     category: category.id,
   }));
 }
 
-export default function CategoryPage({ params }: { params: { category: string } }) {
-  const category = categories.find(c => c.id === params.category);
-  if (!category) {
-    notFound();
-  }
-
-  const categoryProducts = products.filter(p => p.category === params.category);
+export default async function CategoryPage({ params }: { params: { category: string } }) {
+  const category = await getCategoryByIdAction(params.category);
+  const categoryProducts = await getProductsByCategoryAction(params.category);
 
   return (
     <div className="container py-8 px-4 md:px-6">

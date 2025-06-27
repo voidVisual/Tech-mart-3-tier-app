@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -5,12 +6,10 @@ import { Suspense } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, ShoppingCart, User, Zap, Laptop, Smartphone, Camera, Headphones } from 'lucide-react';
-import { categories } from '@/lib/data';
+import type { Category } from '@/lib/data';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { SearchForm } from '@/components/SearchForm';
-
-const navLinks = categories.map(c => ({ href: `/products/${c.id}`, label: c.name }));
 
 const iconMap: { [key: string]: React.ReactNode } = {
   laptops: <Laptop className="h-4 w-4" />,
@@ -19,8 +18,9 @@ const iconMap: { [key: string]: React.ReactNode } = {
   accessories: <Headphones className="h-4 w-4" />,
 };
 
-export function Header() {
+export function Header({ categories }: { categories: Category[] }) {
   const pathname = usePathname();
+  const navLinks = categories.map(c => ({ href: `/products/${c.id}`, label: c.name }));
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

@@ -1,8 +1,9 @@
+
 import Link from 'next/link';
 import { Zap, Twitter, Facebook, Instagram } from 'lucide-react';
-import { categories } from '@/lib/data';
+import type { Category } from '@/lib/data';
 
-export function Footer() {
+export function Footer({ categories }: { categories: Category[] }) {
   const navLinks = categories.map(c => ({ href: `/products/${c.id}`, label: c.name }));
 
   return (
