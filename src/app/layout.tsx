@@ -5,7 +5,7 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Toaster } from "@/components/ui/toaster";
 import { getCategoriesAction } from './actions';
-import { categories } from '@/lib/data';
+import { getSession } from '@/lib/session';
 
 export const metadata: Metadata = {
   title: 'TechMart India',
@@ -18,6 +18,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const categories = await getCategoriesAction();
+  const user = await getSession();
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -29,7 +30,7 @@ export default async function RootLayout({
       </head>
       <body className="font-body antialiased">
         <div className="relative flex min-h-dvh flex-col bg-background">
-          <Header categories={categories} />
+          <Header categories={categories} user={user} />
           <main className="flex-1">
             {children}
           </main>

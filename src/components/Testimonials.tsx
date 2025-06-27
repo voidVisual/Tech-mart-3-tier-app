@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,9 +10,13 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { testimonials } from "@/lib/data";
+import type { Testimonial } from "@/lib/data";
 
-export function Testimonials() {
+export function Testimonials({ testimonials }: { testimonials: Testimonial[] }) {
+  if (!testimonials || testimonials.length === 0) {
+    return null;
+  }
+  
   return (
     <Carousel
       opts={{

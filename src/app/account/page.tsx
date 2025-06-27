@@ -1,22 +1,27 @@
+
+import { redirect } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
+import { getSession } from "@/lib/session";
 
-const mockUser = {
-  name: "Ravi Kumar",
-  email: "ravi.kumar@example.com",
-  avatarUrl: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61",
-};
-
+// Mock data, to be replaced with real data from your database
 const mockOrders = [
   { id: "ORD-2024-001", date: "2024-07-15", status: "Delivered", total: 89999, items: "Ultrabook X1" },
   { id: "ORD-2024-002", date: "2024-07-20", status: "Shipped", total: 3499, items: "PowerBank 20K" },
   { id: "ORD-2024-003", date: "2024-07-22", status: "Processing", total: 79999, items: "Galaxy Z10" },
 ];
 
-export default function AccountPage() {
+export default async function AccountPage() {
+  const user = await getSession();
+
+  // Middleware should handle this, but it's good practice to double-check
+  if (!user) {
+    redirect('/login');
+  }
+
   return (
     <div className="container py-12">
       <div className="text-left mb-12">
@@ -29,11 +34,11 @@ export default function AccountPage() {
           <Card>
             <CardHeader className="items-center text-center p-6">
               <Avatar className="w-24 h-24 mb-4">
-                <AvatarImage src={mockUser.avatarUrl} alt={mockUser.name} data-ai-hint="person portrait"/>
-                <AvatarFallback>{mockUser.name.charAt(0)}</AvatarFallback>
+                <AvatarImage src={`https://api.dicebear.com/8.x/initials/svg?seed=${user.name}`} alt={user.name} />
+                <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
               </Avatar>
-              <CardTitle className="text-2xl font-headline">{mockUser.name}</CardTitle>
-              <CardDescription>{mockUser.email}</CardDescription>
+              <CardTitle className="text-2xl font-headline">{user.name}</CardTitle>
+              <CardDescription>{user.email}</CardDescription>
             </CardHeader>
           </Card>
         </div>

@@ -4,8 +4,11 @@
 import { getProductRecommendations } from '@/ai/flows/product-recommendations';
 import type { ProductRecommendationsInput } from '@/ai/flows/product-recommendations';
 import * as productService from '@/services/productService';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import type { Product } from '@/lib/data';
+import { z } from 'zod';
+import * as authService from '@/services/authService';
+import { createSession, clearSession } from '@/lib/session';
 
 export async function getAIRecommendations(currentProductId: string): Promise<{ success: boolean; recommendations?: (Product & { reason: string })[]; error?: string }> {
   try {
@@ -49,6 +52,7 @@ export async function getAIRecommendations(currentProductId: string): Promise<{ 
   }
 }
 
+// Product and Category Actions
 export async function getCategoriesAction() {
     return productService.getCategories();
 }
@@ -79,4 +83,71 @@ export async function getProductsByCategoryAction(categoryId: string) {
 
 export async function searchProductsAction(query: string) {
     return productService.searchProducts(query);
+}
+
+export async function getTestimonialsAction() {
+    return productService.getTestimonials();
+}
+
+
+// Auth Actions
+
+const signupSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters."),
+  email: z.string().email("Invalid email address."),
+  password: z.string().min(8, "Password must be at least 8 characters."),
+});
+
+export async function signupAction(prevState: any, formData: FormData) {
+    const validatedFields = signupSchema.safeParse(Object.fromEntries(formData.entries()));
+
+    if (!validatedFields.success) {
+        return {
+            type: 'error',
+            errors: validatedFields.error.flatten().fieldErrors,
+        };
+    }
+
+    const { name, email, password } = validatedFields.data;
+
+    try {
+        await authService.signup(name, email, password);
+        return { type: 'success', message: 'Signup successful! Please log in.' };
+    } catch (error: any) {
+        return { type: 'error', message: error.message || 'An unexpected error occurred.' };
+    }
+}
+
+const loginSchema = z.object({
+    email: z.string().email("Invalid email address."),
+    password: z.string().min(1, "Password is required."),
+});
+
+export async function loginAction(prevState: any, formData: FormData) {
+    const validatedFields = loginSchema.safeParse(Object.fromEntries(formData.entries()));
+
+    if (!validatedFields.success) {
+        return {
+            type: 'error',
+            errors: validatedFields.error.flatten().fieldErrors,
+        };
+    }
+
+    const { email, password } = validatedFields.data;
+
+    try {
+        const user = await authService.login(email, password);
+        if (user) {
+            await createSession({ id: user.id, name: user.name, email: user.email });
+            redirect('/account');
+        } else {
+             return { type: 'error', message: 'Invalid credentials.' };
+        }
+    } catch (error: any) {
+         return { type: 'error', message: error.message || 'An unexpected error occurred.' };
+    }
+}
+
+export async function logoutAction() {
+    await clearSession();
 }

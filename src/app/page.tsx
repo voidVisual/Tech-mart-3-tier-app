@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Testimonials } from '@/components/Testimonials';
 import { ArrowRight, Laptop, Smartphone, Camera, Headphones } from 'lucide-react';
 import { ProductCard } from '@/components/ProductCard';
-import { getCategoriesAction, getFeaturedProductsAction } from './actions';
+import { getCategoriesAction, getFeaturedProductsAction, getTestimonialsAction } from './actions';
 
 const categoryIcons: { [key: string]: React.ReactNode } = {
   laptops: <Laptop className="h-8 w-8" />,
@@ -18,6 +18,7 @@ const categoryIcons: { [key: string]: React.ReactNode } = {
 export default async function Home() {
   const categories = await getCategoriesAction();
   const featuredProducts = await getFeaturedProductsAction();
+  const testimonials = await getTestimonialsAction();
 
   return (
     <div className="flex flex-col">
@@ -100,7 +101,7 @@ export default async function Home() {
       <section className="w-full py-12 md:py-24 lg:py-32 bg-secondary">
         <div className="container px-4 md:px-6">
            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline text-center mb-12">What Our Customers Say</h2>
-          <Testimonials />
+          <Testimonials testimonials={testimonials} />
         </div>
       </section>
     </div>

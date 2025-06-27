@@ -10,6 +10,8 @@ import type { Category } from '@/lib/data';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { SearchForm } from '@/components/SearchForm';
+import { logoutAction } from '@/app/actions';
+import { UserPayload } from '@/lib/session';
 
 const iconMap: { [key: string]: React.ReactNode } = {
   laptops: <Laptop className="h-4 w-4" />,
@@ -18,7 +20,31 @@ const iconMap: { [key: string]: React.ReactNode } = {
   accessories: <Headphones className="h-4 w-4" />,
 };
 
-export function Header({ categories }: { categories: Category[] }) {
+function AuthButtons({ user }: { user: UserPayload | null }) {
+  if (user) {
+    return (
+      <div className="flex items-center gap-1">
+        <form action={logoutAction}>
+          <Button variant="ghost" type="submit">Log Out</Button>
+        </form>
+        <div className="h-6 border-l mx-2"></div>
+      </div>
+    );
+  }
+  return (
+    <>
+      <Button variant="ghost" asChild>
+        <Link href="/login">Log In</Link>
+      </Button>
+      <Button asChild>
+        <Link href="/signup">Sign Up</Link>
+      </Button>
+      <div className="h-6 border-l mx-2"></div>
+    </>
+  );
+}
+
+export function Header({ categories, user }: { categories: Category[], user: UserPayload | null }) {
   const pathname = usePathname();
   const navLinks = categories.map(c => ({ href: `/products/${c.id}`, label: c.name }));
 
@@ -64,16 +90,10 @@ export function Header({ categories }: { categories: Category[] }) {
 
           <div className="flex items-center gap-1">
              <nav className="hidden md:flex items-center gap-1">
-              <Button variant="ghost" asChild>
-                <Link href="/login">Log In</Link>
-              </Button>
-              <Button asChild>
-                <Link href="/signup">Sign Up</Link>
-              </Button>
+              <AuthButtons user={user} />
             </nav>
 
             <nav className="flex items-center">
-              <div className="h-6 border-l mx-2 hidden md:block"></div>
               <Button variant="ghost" size="icon" asChild>
                 <Link href="/account">
                   <User className="h-5 w-5" />
@@ -120,8 +140,16 @@ export function Header({ categories }: { categories: Category[] }) {
                     ))}
                   </div>
                   <div className="border-t pt-4 mt-4 space-y-2 px-4">
-                      <Button variant="outline" className="w-full justify-start" asChild><Link href="/login">Log In</Link></Button>
-                      <Button className="w-full justify-start" asChild><Link href="/signup">Sign Up</Link></Button>
+                      {user ? (
+                        <form action={logoutAction} className="w-full">
+                            <Button variant="outline" className="w-full justify-start" type="submit">Log Out</Button>
+                        </form>
+                      ) : (
+                        <>
+                         <Button variant="outline" className="w-full justify-start" asChild><Link href="/login">Log In</Link></Button>
+                         <Button className="w-full justify-start" asChild><Link href="/signup">Sign Up</Link></Button>
+                        </>
+                      )}
                   </div>
                 </SheetContent>
               </Sheet>
