@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, ShoppingCart, User, Zap, Laptop, Smartphone, Camera, Headphones } from 'lucide-react';
@@ -56,7 +57,9 @@ export function Header() {
 
         <div className="flex flex-none items-center justify-end gap-4">
           <div className="hidden w-full max-w-sm md:block">
-            <SearchForm />
+            <Suspense fallback={null}>
+              <SearchForm />
+            </Suspense>
           </div>
 
           <div className="flex items-center gap-1">
@@ -97,7 +100,9 @@ export function Header() {
                     <span className="font-bold font-headline">TechMart India</span>
                   </Link>
                   <div className="px-4 mb-4">
-                    <SearchForm />
+                    <Suspense fallback={null}>
+                      <SearchForm />
+                    </Suspense>
                   </div>
                   <div className="flex flex-col space-y-2 px-4">
                     {navLinks.map(link => (
